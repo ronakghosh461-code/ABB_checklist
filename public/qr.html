@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator - QR Site Checklist Admin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- Admin Navbar -->
+  <header class="admin-navbar">
+    <div class="nav-container">
+      <a href="/admin" class="brand-wrapper">
+        <div style="width: 32px; height: 32px; background: #2563eb; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800;">✓</div>
+        <div style="font-weight: 800; font-size: 1.15rem;">QR Site Checklist <span style="font-size: 0.8rem; background: var(--bg-subtle); padding: 2px 8px; border-radius: 12px; margin-left: 6px; border: 1px solid var(--border-color);">Admin</span></div>
+      </a>
+      <div class="nav-links">
+        <a href="/admin" class="nav-btn">📊 Reports</a>
+        <a href="/admin/qr" class="nav-btn active">📱 QR Generator</a>
+        <button id="themeToggleBtn" class="nav-btn" type="button" title="Toggle Theme">🌙</button>
+        <button id="logoutBtn" class="nav-btn btn-danger" type="button" style="display: none;">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Section (shown when unauthenticated) -->
+  <div id="loginSection" class="admin-container" style="display: none;">
+    <div class="login-box">
+      <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+      <h1 class="login-title">Admin Access</h1>
+      <p class="login-subtitle">Enter the administrator password to access the QR code generator.</p>
+      
+      <form id="loginForm">
+        <div class="form-group" style="margin-bottom: 16px; text-align: left;">
+          <label for="adminPasswordInput">Admin Password</label>
+          <input 
+            type="password" 
+            id="adminPasswordInput" 
+            placeholder="Enter admin password" 
+            required 
+            autocomplete="current-password"
+          >
+        </div>
+        <div id="loginError" style="color: var(--problem-color); font-size: 0.85rem; margin-bottom: 12px; display: none;"></div>
+        <button type="submit" class="btn-primary" id="loginSubmitBtn">Log In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- QR Generator Section -->
+  <main id="qrSection" class="admin-container" style="display: none;">
+    
+    <!-- Input Card -->
+    <div class="filter-card print-hide">
+      <div class="filter-header">
+        <div class="filter-title">
+          <span>📱</span> Generate Site QR Codes
+        </div>
+        <div class="filter-actions">
+          <button id="printBtn" class="btn-primary" type="button" style="display: none; background: #059669;">
+            <span>🖨️</span> Print QR Badges
+          </button>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px; font-size: 0.9rem; color: var(--text-muted);">
+        Enter each site or equipment location name below (one per line). The app will generate printable QR codes. When scanned on a phone, employees will immediately land on the inspection checklist for that specific location without any login required.
+      </div>
+
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="siteListInput">Site Names (One per line):</label>
+        <textarea 
+          id="siteListInput" 
+          rows="6" 
+          placeholder="Pump-Room-1&#10;Warehouse-Bay-B&#10;Main-Substation&#10;Assembly-Line-2&#10;Chemical-Storage-Area"
+          style="font-family: monospace; font-size: 0.95rem; width: 100%; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px; background: var(--bg-input); color: var(--text-main);"
+        >Pump-Room-1
+Warehouse-Bay-B
+Main-Substation
+Assembly-Line-2</textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="baseUrlInput">Base URL (App domain):</label>
+        <input 
+          type="text" 
+          id="baseUrlInput" 
+          placeholder="http://localhost:3000"
+        >
+        <small style="color: var(--text-muted); margin-top: 4px;">Leave as detected or update if using a public domain/IP address (e.g. https://checklist.mycompany.com).</small>
+      </div>
+
+      <button id="generateBtn" class="btn-primary" type="button" style="max-width: 250px;">
+        Generate Printable Codes
+      </button>
+    </div>
+
+    <!-- Output Section -->
+    <div id="outputContainer">
+      <div id="qrHeader" style="display: none; justify-content: space-between; align-items: center; margin: 20px 0 10px;">
+        <h2 style="font-size: 1.25rem; font-weight: 800;">
+          Generated QR Badges <span id="badgeCount" style="font-weight: normal; font-size: 0.9rem; color: var(--text-muted);"></span>
+        </h2>
+      </div>
+
+      <div id="qrGrid" class="qr-grid">
+        <!-- Rendered via qr.js -->
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/qr.js"></script>
+</body>
+</html>

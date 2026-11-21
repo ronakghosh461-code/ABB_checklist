@@ -1,0 +1,162 @@
+[
+  {
+    "stage": "Before Power On",
+    "items": [
+      {
+        "step": "Verify mechanical installation",
+        "method": "Check cabinet mounting, drive fastening, airflow clearances",
+        "allow_na": true
+      },
+      {
+        "step": "Inspect environment conditions",
+        "method": "Confirm ambient temp, humidity, enclosure IP rating",
+        "allow_na": true
+      },
+      {
+        "step": "Ensure power isolation",
+        "method": "Lock disconnector, measure no voltage at input terminals",
+        "allow_na": true
+      },
+      {
+        "step": "Check supply voltage rating",
+        "method": "Compare input supply with drive type label",
+        "allow_na": true
+      },
+      {
+        "step": "Verify grounding connections",
+        "method": "Ensure PE conductors sized, tightened, continuity tested",
+        "allow_na": true
+      },
+      {
+        "step": "Confirm cable connections",
+        "method": "Input/motor/brake resistor cables connected & tightened",
+        "allow_na": true
+      },
+      {
+        "step": "Check routing & separation",
+        "method": "Motor/brake cables separated from control/signal cables",
+        "allow_na": true
+      },
+      {
+        "step": "Verify fuses & disconnectors",
+        "method": "Confirm correct supply fuses installed",
+        "allow_na": true
+      },
+      {
+        "step": "Discharge DC link capacitors",
+        "method": "Wait 5 min, measure DC bus voltage",
+        "allow_na": true
+      }
+    ]
+  },
+  {
+    "stage": "During Power Up",
+    "items": [
+      {
+        "step": "Observe drive startup sequence",
+        "method": "Watch panel display, confirm normal boot",
+        "allow_na": true
+      },
+      {
+        "step": "Check for alarms or faults",
+        "method": "Monitor panel for warnings/faults",
+        "allow_na": true
+      },
+      {
+        "step": "Verify cooling fans operation",
+        "method": "Ensure fans run, airflow present",
+        "allow_na": true
+      },
+      {
+        "step": "Confirm supply voltage & current",
+        "method": "Measure input values within rated limits",
+        "allow_na": true
+      },
+      {
+        "step": "Check control power & I/O signals",
+        "method": "Verify auxiliary supply, digital inputs/outputs",
+        "allow_na": true
+      },
+      {
+        "step": "Parameter verification",
+        "method": "Review motor data, control mode, protections",
+        "allow_na": true
+      },
+      {
+        "step": "Observe motor status (before run command)",
+        "method": "Ensure motor stationary, no unintended rotation",
+        "allow_na": true
+      },
+      {
+        "step": "Check safety interlocks",
+        "method": "Test emergency stop & interlocks",
+        "allow_na": true
+      },
+      {
+        "step": "Monitor drive temperature",
+        "method": "Observe panel readings",
+        "allow_na": true
+      },
+      {
+        "step": "Log initial readings",
+        "method": "Record supply voltage/current in commissioning sheet",
+        "allow_na": true
+      }
+    ]
+  },
+  {
+    "stage": "After Power Up",
+    "items": [
+      {
+        "step": "Parameter confirmation",
+        "method": "Verify motor nameplate data vs drive parameters",
+        "allow_na": true
+      },
+      {
+        "step": "Motor rotation test",
+        "method": "Run at low speed, confirm correct direction",
+        "allow_na": true
+      },
+      {
+        "step": "Check acceleration & deceleration ramps",
+        "method": "Observe smooth motor response",
+        "allow_na": true
+      },
+      {
+        "step": "Brake resistor / braking unit test",
+        "method": "Verify resistor heating & feedback during deceleration",
+        "allow_na": true
+      },
+      {
+        "step": "Load test",
+        "method": "Run under load, monitor current, torque, speed stability",
+        "allow_na": true
+      },
+      {
+        "step": "Protection function verification",
+        "method": "Test overload, over/under voltage, emergency stop",
+        "allow_na": true
+      },
+      {
+        "step": "Check drive temperature & cooling",
+        "method": "Monitor readings during operation, confirm fan operation",
+        "allow_na": true
+      },
+      {
+        "step": "Noise & vibration check",
+        "method": "Inspect for abnormal noise/vibration",
+        "allow_na": true
+      },
+      {
+        "step": "I/O & communication verification",
+        "method": "Confirm fieldbus comms & I/O signals",
+        "allow_na": true
+      },
+      {
+        "step": "Final documentation",
+        "method": "Record all test results & observations",
+        "allow_na": true
+      }
+    ]
+  }
+]

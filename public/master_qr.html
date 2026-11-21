@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code - Site Inspection Checklist</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0b1120 0%, #1e293b 100%);
+    }
+
+    .master-qr-card {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      padding: 36px 32px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      border: 2px solid #e2e8f0;
+    }
+
+    .master-qr-badge {
+      display: inline-block;
+      background: #fff1f2;
+      color: #ff000f;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      border: 1px solid #fecdd3;
+    }
+
+    .master-qr-title {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .master-qr-subtitle {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .qr-frame {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 16px;
+      display: inline-block;
+      border: 3.5px solid #ff000f;
+      box-shadow: 0 4px 10px -1px rgba(255, 0, 15, 0.15);
+      margin-bottom: 20px;
+    }
+
+    .master-qr-image {
+      width: 260px;
+      height: 260px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .scan-steps {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 0.85rem;
+      color: #334155;
+      text-align: left;
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .scan-steps ol {
+      margin-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .direct-url {
+      font-size: 0.8rem;
+      color: #2563eb;
+      word-break: break-all;
+      font-family: monospace;
+      margin-bottom: 20px;
+      display: block;
+      text-decoration: underline;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .master-qr-card {
+        box-shadow: none !important;
+        border: 2px solid #000000 !important;
+        max-width: 100% !important;
+        padding: 20px !important;
+      }
+      .print-hide {
+        display: none !important;
+      }
+      .qr-frame {
+        border-color: #000000 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="master-qr-card">
+    <div style="margin-bottom: 16px;">
+      <img src="/images/abb-logo.png" alt="ABB" style="height: 52px; max-width: 180px; object-fit: contain; margin: 0 auto; display: block;">
+    </div>
+    <div class="master-qr-badge">📍 SITE INSPECTION</div>
+    <div id="statusBadge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;">
+      <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></span>
+      <span id="statusText">Connecting worldwide tunnel...</span>
+    </div>
+    <h1 class="master-qr-title">Scan to Inspect</h1>
+    <p class="master-qr-subtitle">Point your phone's camera at this QR code. The checklist opens directly—works on any phone (4G/5G/Wi-Fi) with no login needed.</p>
+
+    <div class="qr-frame">
+      <img id="qrImage" class="master-qr-image" src="" alt="Site Inspection QR Code">
+    </div>
+
+    <a id="directLink" class="direct-url" href="#" target="_blank">Loading link...</a>
+
+    <div class="scan-steps print-hide">
+      <ol>
+        <li>Open your smartphone camera.</li>
+        <li>Point it at the QR code above.</li>
+        <li>Tap the pop-up link to fill and submit the checklist.</li>
+      </ol>
+    </div>
+
+    <div class="action-row print-hide">
+      <button onclick="window.print()" class="btn-primary" style="background: #059669; padding: 10px 18px; font-size: 0.9rem;">
+        🖨️ Print QR Badge
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let pollCount = 0;
+    async function loadMasterQr() {
+      try {
+        const res = await fetch('/api/qr/master');
+        const data = await res.json();
+        if (data.qrDataUrl) {
+          document.getElementById('qrImage').src = data.qrDataUrl;
+          const link = document.getElementById('directLink');
+          link.href = data.targetUrl;
+          link.textContent = data.targetUrl;
+
+          const statusText = document.getElementById('statusText');
+          const statusBadge = document.getElementById('statusBadge');
+          if (data.isPublic) {
+            statusText.textContent = '🟢 Worldwide Online (Works on 4G/5G on any phone)';
+            statusBadge.style.background = '#ecfdf5';
+            statusBadge.style.color = '#065f46';
+            statusBadge.style.borderColor = '#a7f3d0';
+          } else {
+            statusText.textContent = '🟡 Local Wi-Fi Mode (Connecting global tunnel...)';
+            if (pollCount++ < 10) {
+              setTimeout(loadMasterQr, 1500);
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load QR code:', e);
+      }
+    }
+    loadMasterQr();
+  </script>
+</body>
+</html>

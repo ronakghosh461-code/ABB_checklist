@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ff000f">
+  <title>ABB Drive Commissioning Checklist</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/png" href="/images/abb-logo.png">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand">
+        <img src="/images/abb-logo.png" alt="ABB Logo" class="brand-logo">
+        <div class="brand-divider"></div>
+        <div class="brand-meta">
+          <div class="brand-title">Drive Commissioning Checklist</div>
+          <div class="brand-subtitle">Site Quality &amp; Verification Protocol</div>
+        </div>
+      </div>
+      <div class="header-actions" style="display: flex; align-items: center; gap: 8px;">
+        <a href="/admin" class="header-admin-link" title="Admin Database & Reports" style="text-decoration: none; font-size: 0.85rem; font-weight: 700; color: var(--text-main); background: var(--bg-subtle); border: 1.5px solid var(--border-color); padding: 8px 14px; border-radius: 20px; transition: all 0.2s;">
+          🔐 Admin
+        </a>
+        <button id="themeToggleBtn" class="theme-toggle" type="button" aria-label="Toggle Dark Mode" title="Toggle theme">
+          🌙
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- Report Form View -->
+    <div id="formSection">
+
+      <!-- Location Hero Banner -->
+      <div class="location-banner">
+        <div class="banner-accent-line"></div>
+        <div class="banner-body">
+          <div class="banner-top-row">
+            <span class="location-badge">⚡ DRIVE VERIFICATION</span>
+            <span id="currentDateBadge" class="date-badge">Today</span>
+          </div>
+          <div id="siteLocationDisplay" class="location-value">Site Inspection</div>
+          <div class="location-subtext">ABB Drive Commissioning &amp; Quality Checklist</div>
+        </div>
+      </div>
+
+      <!-- Site & Drive Details Card -->
+      <div class="card header-info-card">
+        <h2 class="card-title">
+          <span class="title-icon">📋</span> Site &amp; Equipment Information
+        </h2>
+        
+        <div class="form-grid-two">
+          <div class="form-group">
+            <label for="locationInput">
+              LOCATION <span class="required-star">*</span>
+              <span class="label-hint">(e.g. Substation-2 / Pump Room A)</span>
+            </label>
+            <input 
+              type="text" 
+              id="locationInput" 
+              placeholder="e.g. Substation-2 / Pump Room A" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="driveDetailsInput">
+              DRIVE DETAILS
+              <span class="label-hint">(e.g. ACS880-01-045A-3 / S/N 1240982)</span>
+            </label>
+            <input 
+              type="text" 
+              id="driveDetailsInput" 
+              placeholder="e.g. ACS880-01-045A-3 / S/N 1240982" 
+            >
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 12px;">
+          <label for="employeeNameInput">
+            Inspector / Engineer Name <span class="required-star">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="employeeNameInput" 
+            placeholder="Enter your full name" 
+            autocomplete="name" 
+            required
+            maxlength="100"
+          >
+        </div>
+      </div>
+
+      <!-- Sticky / Floating Progress Indicator -->
+      <div class="progress-container">
+        <div class="progress-header">
+          <span class="progress-text">Verification Progress</span>
+          <span id="progressCount" class="progress-count">0 of 29 completed</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Checklist Items Container (Dynamically Populated by Stage) -->
+      <div id="checklistContainer">
+        <!-- Loading Skeleton -->
+        <div class="card" style="text-align: center; color: var(--text-muted); padding: 40px 20px;">
+          <div class="spinner" style="border-top-color: var(--primary); width: 28px; height: 28px; margin-bottom: 12px;"></div>
+          <div>Loading Drive Commissioning steps...</div>
+        </div>
+      </div>
+
+      <!-- Remarks Card -->
+      <div class="card">
+        <h2 class="card-title">
+          <span class="title-icon">📝</span> Remarks &amp; Observations
+        </h2>
+        <div class="form-group">
+          <label for="remarksInput">
+            Commissioning remarks (Optional):
+          </label>
+          <textarea 
+            id="remarksInput" 
+            placeholder="* Initial voltage / current readings:&#10;* Commissioning observations:&#10;* Special parameters configured:"
+            rows="4"
+            maxlength="1500"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Validation Error Box -->
+      <div id="errorAlert" class="alert-error" role="alert">
+        <strong>⚠️ Please complete all checklist steps before submitting:</strong>
+        <ul id="errorList"></ul>
+      </div>
+
+      <!-- Submit Button -->
+      <button id="submitBtn" class="btn-submit" type="button">
+        <span id="submitBtnSpinner" class="spinner" style="display: none;"></span>
+        <span id="submitBtnText">Submit Commissioning Checklist</span>
+      </button>
+
+      <!-- Elegant Divider Line -->
+      <hr class="creator-divider">
+
+      <!-- Creator Profile Section -->
+      <div class="creator-card">
+        <div class="creator-badge">CREATED &amp; DEVELOPED BY</div>
+        <h3 class="creator-name">Ronak Ghosh</h3>
+        <p class="creator-tagline">Industrial Automation &amp; System Integration</p>
+        <div class="creator-contacts">
+          <a href="tel:9242217345" class="creator-contact-pill">
+            <span class="contact-icon">📞</span>
+            <span>+91 9242217345</span>
+          </a>
+          <a href="mailto:ronakghosh461@gmail.com" class="creator-contact-pill">
+            <span class="contact-icon">✉️</span>
+            <span>ronakghosh461@gmail.com</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Success Confirmation Screen (Shown after submit) -->
+    <div id="successSection" class="success-screen">
+      <div class="success-logo-wrap">
+        <img src="/images/abb-logo.png" alt="ABB" class="success-abb-logo">
+      </div>
+      <div class="success-icon-badge">✓</div>
+      <h2 class="success-title">Checklist Submitted!</h2>
+      <p class="success-subtitle">
+        The drive commissioning checklist has been successfully recorded in the admin database.
+      </p>
+
+      <div class="receipt-card">
+        <div class="receipt-row">
+          <span class="receipt-label">Inspector Name:</span>
+          <span id="successEmployee" class="receipt-value">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Location:</span>
+          <span id="successSite" class="receipt-value">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Drive Details:</span>
+          <span id="successDriveDetails" class="receipt-value">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Total Steps Verified:</span>
+          <span id="successStepsCount" class="receipt-value">29 of 29</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Submitted At:</span>
+          <span id="successTime" class="receipt-value">-</span>
+        </div>
+      </div>
+
+      <button id="submitAnotherBtn" class="btn-secondary" type="button">
+        Submit Another Checklist
+      </button>
+
+      <!-- Creator Badge on Success Screen too -->
+      <div style="margin-top: 24px; font-size: 0.82rem; color: var(--text-muted);">
+        System Created by <strong>Ronak Ghosh</strong> • 📞 +91 9242217345 • ✉️ ronakghosh461@gmail.com
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

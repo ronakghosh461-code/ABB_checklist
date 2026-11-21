@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - QR Site Checklist</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- Admin Navbar -->
+  <header class="admin-navbar">
+    <div class="nav-container">
+      <a href="/admin" class="brand-wrapper">
+        <img src="/images/abb-logo.png" alt="ABB" style="height: 32px; width: auto; object-fit: contain;">
+        <div style="width: 1px; height: 24px; background: var(--border-color); margin: 0 4px;"></div>
+        <div style="font-weight: 800; font-size: 1.15rem;">Site Checklist <span style="font-size: 0.8rem; background: var(--bg-subtle); padding: 2px 8px; border-radius: 12px; margin-left: 6px; border: 1px solid var(--border-color);">Admin</span></div>
+      </a>
+      <div class="nav-links">
+        <a href="/" target="_blank" class="nav-btn" style="font-weight: 700; color: #ff000f; border-color: #ff000f;">
+          📝 Open Checklist Form
+        </a>
+        <a href="/admin" class="nav-btn active">📊 Live Database</a>
+        <button id="themeToggleBtn" class="nav-btn" type="button" title="Toggle Theme">🌙</button>
+        <button id="logoutBtn" class="nav-btn btn-danger" type="button" style="display: none;">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Section (shown when unauthenticated) -->
+  <div id="loginSection" class="admin-container" style="display: none;">
+    <div class="login-box">
+      <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+      <h1 class="login-title">Admin Access</h1>
+      <p class="login-subtitle">Enter the administrator password to view site checklist reports and analytics.</p>
+      
+      <form id="loginForm">
+        <div class="form-group" style="margin-bottom: 16px; text-align: left;">
+          <label for="adminPasswordInput">Admin Password</label>
+          <input 
+            type="password" 
+            id="adminPasswordInput" 
+            placeholder="Enter admin password" 
+            required 
+            autocomplete="current-password"
+          >
+        </div>
+        <div id="loginError" style="color: var(--problem-color); font-size: 0.85rem; margin-bottom: 12px; display: none;"></div>
+        <button type="submit" class="btn-primary" id="loginSubmitBtn">Log In to Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Section (shown when authenticated) -->
+  <main id="dashboardSection" class="admin-container" style="display: none;">
+    
+    <!-- KPI Summary Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📋</div>
+        <div>
+          <div class="stat-label">Total Submissions</div>
+          <div id="statTotal" class="stat-value">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">⚠️</div>
+        <div>
+          <div class="stat-label">With Problems</div>
+          <div id="statProblems" class="stat-value">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✓</div>
+        <div>
+          <div class="stat-label">All-OK Passes</div>
+          <div id="statOk" class="stat-value">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gray">📍</div>
+        <div>
+          <div class="stat-label">Active Sites</div>
+          <div id="statSites" class="stat-value">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters & Actions Card -->
+    <div class="filter-card">
+      <div class="filter-header">
+        <div class="filter-title">
+          <span>🔍</span> Filter Reports
+        </div>
+        <div class="filter-actions">
+          <button id="resetFiltersBtn" class="nav-btn" type="button">Reset Filters</button>
+          <button id="downloadDbBtn" class="nav-btn" type="button" style="font-weight: 700;">
+            <span>💾</span> Backup Database (.db)
+          </button>
+          <button id="downloadCsvBtn" class="btn-csv" type="button">
+            <span>📥</span> Export CSV / Excel
+          </button>
+          <button id="clearAllBtn" class="nav-btn" type="button" style="color: #dc2626; border-color: #fecaca;" title="Delete all reports from database">
+            <span>🗑️</span> Clear All
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-grid">
+        <div class="form-group">
+          <label for="filterSite">Site / Location</label>
+          <select id="filterSite">
+            <option value="all">All Sites</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterStartDate">From Date</label>
+          <input type="date" id="filterStartDate">
+        </div>
+        <div class="form-group">
+          <label for="filterEndDate">To Date</label>
+          <input type="date" id="filterEndDate">
+        </div>
+        <div class="form-group">
+          <label for="filterSearch">Search Employee</label>
+          <input type="text" id="filterSearch" placeholder="Name or Badge #">
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label" for="filterProblemsOnly">
+            <input type="checkbox" id="filterProblemsOnly">
+            <span>Only with problems</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports Section -->
+    <div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h2 style="font-size: 1.15rem; font-weight: 800; margin: 0;">
+            Inspection Reports <span id="reportCountBadge" style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">(0 found)</span>
+          </h2>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 12px; font-weight: 600;">
+            <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span> Live
+          </span>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">
+          New submissions appear automatically • Click to inspect
+        </div>
+      </div>
+
+      <!-- Reports List -->
+      <div id="reportsList" class="reports-list">
+        <div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading inspection reports...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Report Detail Modal -->
+  <div id="detailModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalReportTitle" class="modal-title">Inspection Report Detail</h3>
+        <button id="closeModalBtn" class="modal-close-btn" type="button">&times;</button>
+      </div>
+      <div id="modalBody" class="modal-body">
+        <!-- Injected via admin.js -->
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <button id="modalDeleteBtn" class="nav-btn" type="button" style="background: #fef2f2; border: 1.5px solid #fecaca; color: #dc2626; font-weight: 700; cursor: pointer;">
+          <span>🗑️</span> Delete This Report
+        </button>
+        <button id="modalCloseActionBtn" class="nav-btn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Photo Lightbox -->
+  <div id="lightboxOverlay" class="lightbox-overlay">
+    <img id="lightboxImg" class="lightbox-img" src="" alt="Full size problem photo">
+  </div>
+
+  <!-- Master QR Modal -->
+  <div id="masterQrModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 440px; text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title">📱 Scan Inspection QR Code</h3>
+        <button id="closeMasterQrBtn" class="modal-close-btn" type="button">&times;</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 24px;">
+        <div style="margin-bottom: 14px;">
+          <img src="/images/abb-logo.png" alt="ABB" style="height: 38px; width: auto; object-fit: contain; margin: 0 auto; display: block;">
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">
+          Hold up this QR code for anyone to scan with their phone. The checklist opens directly—no login needed!
+        </p>
+        <div style="background: white; padding: 12px; border-radius: 12px; display: inline-block; border: 2px solid var(--primary); margin-bottom: 14px;">
+          <img id="adminQrImage" src="" alt="Site QR" style="width: 240px; height: 240px; display: block; margin: 0 auto;">
+        </div>
+        <div style="margin-bottom: 12px;">
+          <a id="adminQrUrl" href="#" target="_blank" style="font-size: 0.8rem; color: var(--primary); font-family: monospace; word-break: break-all;">Loading URL...</a>
+        </div>
+        <div style="font-size: 0.8rem; background: var(--bg-subtle); padding: 8px 12px; border-radius: 6px; color: var(--text-muted);">
+          ⚡ Submissions will automatically appear on this dashboard in real-time.
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: center; gap: 10px;">
+        <button onclick="window.open('/qr', '_blank')" class="btn-primary" style="padding: 8px 16px; font-size: 0.85rem;" type="button">Open Full Screen</button>
+        <button id="closeMasterQrBtn2" class="nav-btn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
